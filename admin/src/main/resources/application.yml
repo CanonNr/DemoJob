@@ -1,0 +1,5 @@
+server:
+  port: 14741
+spring:
+  application:
+    name: demo-job-admin
