@@ -16,6 +16,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>cn.lksun.demojob</groupId>
             <artifactId>core</artifactId>
         </dependency>
