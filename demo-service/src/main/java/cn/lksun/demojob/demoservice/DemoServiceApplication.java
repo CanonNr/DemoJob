@@ -13,7 +13,6 @@ import javax.annotation.Resource;
 import java.util.Map;
 
 @SpringBootApplication
-@EnableAspectJAutoProxy
 @EnableDemoJob
 public class DemoServiceApplication {
 

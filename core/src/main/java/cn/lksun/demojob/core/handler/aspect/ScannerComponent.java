@@ -31,11 +31,16 @@ public class ScannerComponent implements BeanPostProcessor {
     public Object postProcessAfterInitialization(Object bean, String beanName) {
         Method[] methods = ReflectionUtils.getAllDeclaredMethods(bean.getClass());
         for (Method method : methods) {
-            JobHandle jobHandle = AnnotationUtils.findAnnotation(method, JobHandle.class);
-            if (null != jobHandle) {
-                String handleName = jobHandle.Name();
-                Handle handle = new Handle(handleName,method);
-                handleMap.put(handleName,handle);
+            if (method != null){
+                JobHandle jobHandle = AnnotationUtils.findAnnotation(method, JobHandle.class);
+                if (jobHandle!=null) {
+                    String handleName = jobHandle.Name();
+                    String handleDescription = jobHandle.Description();
+                    String className = method.getDeclaringClass().getName();
+                    String methodName = method.getName();
+                    Handle handle = new Handle(handleName,handleDescription,method.toString(),className, methodName);
+                    handleMap.put(handleName,handle);
+                }
             }
         }
         return bean;

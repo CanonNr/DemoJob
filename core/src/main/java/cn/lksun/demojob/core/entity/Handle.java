@@ -2,38 +2,50 @@ package cn.lksun.demojob.core.entity;
 
 import lombok.Data;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 @Data
 public class Handle {
 
-    public String ClassName;
 
-    public Method Method;
+    public String handleName;
 
-    public String HandleName;
+    public String handleDescription;
 
-    public String ClassPath;
+    public String className;
 
-    public Object getObject() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        Class<?> aClass = Class.forName(ClassPath);
+    public String methodName;
+
+    public String methodString;
+
+    protected Object getObject() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        Class<?> aClass = Class.forName(className);
         return aClass.newInstance();
     }
-
-    public void invoke(Object... args) throws IllegalAccessException, InstantiationException, ClassNotFoundException, InvocationTargetException {
-        this.Method.invoke(this.getObject(),args);
+    protected Method getMethod() throws ClassNotFoundException, NoSuchMethodException {
+        Class<?> aClass = Class.forName(className);
+        return aClass.getMethod(methodName);
     }
 
-    public Handle(String HandleName, Method Method){
+    protected void invoke(Object... args){
+        try {
+            this.getMethod().invoke(this.getObject(),args);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public Handle(String HandleName,String handleDescription , String methodString, String className,String methodName){
         // 执行器名称
-        this.HandleName = HandleName;
-        // 执行方法
-        this.Method = Method;
+        this.handleName = HandleName;
+        // 执行器介绍
+        this.handleDescription = handleDescription;
         // 方法名
-        this.ClassName = Method.toString();
+        this.className = className;
         // 类路径
-        this.ClassPath = Method.getDeclaringClass().getName();
+        this.methodName = methodName;
+
+        this.methodString = methodString;
     }
 
     Handle(){

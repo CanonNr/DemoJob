@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CreateHandle {
-    @JobHandle(Name = "CreateHandle")
-    public void test(){
+    @JobHandle(Name = "CreateHandle",Description = "一个创建执行器")
+    public void test(String id,Integer time){
         for (int i = 0; i < 3; i++) {
             System.out.println("[CreateHandle] Hello DemoJob!");
         }

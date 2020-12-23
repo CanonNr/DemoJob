@@ -6,5 +6,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface JobHandle {
+
     String Name();
+
+    String Description() default "Job Handle";
 }
