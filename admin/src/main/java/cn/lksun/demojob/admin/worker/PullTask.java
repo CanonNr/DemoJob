@@ -4,9 +4,12 @@ import io.micrometer.core.instrument.util.NamedThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.Ordered;
+import org.springframework.data.redis.core.BoundZSetOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import java.util.Timer;
-import java.util.TimerTask;
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -15,8 +18,12 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class PullTask implements CommandLineRunner, Ordered {
 
+    public final String TIME_RANK = "demojob:time-rank";
 
-    private static final ThreadPoolExecutor poll = new ThreadPoolExecutor(10,
+    @Resource
+    RedisTemplate<String, Serializable> redisTemplate;
+
+    private static final ThreadPoolExecutor poll = new ThreadPoolExecutor(60,
             60,
             0L,
             TimeUnit.MILLISECONDS,
@@ -32,11 +39,31 @@ public class PullTask implements CommandLineRunner, Ordered {
                 poll.execute(new Runnable() {
                     @Override
                     public void run() {
-                        log.info("working...");
+
+                        BoundZSetOperations<String, Serializable> timeRankOps = redisTemplate.boundZSetOps(TIME_RANK);
+
+                        while (true){
+                            Set<Serializable> range = timeRankOps.range(0L, 0L);
+                            if (range != null) {
+                                String taskId = (String) Arrays.stream(range.toArray()).findFirst().orElse(null);
+                                if (taskId != null) {
+                                    int score = Objects.requireNonNull(timeRankOps.score(taskId)).intValue();
+                                    if (score <= System.currentTimeMillis() / 1000){
+                                        // todo
+                                        log.info("开始执行...{}",taskId);
+                                        timeRankOps.remove(taskId);
+                                    }
+
+                                    // 没有需要执行的任务
+                                    log.info("end...");
+                                    break;
+                                }
+                            }
+                        }
                     }
                 });
             }
-        }, 0, 5000);
+        }, 0, 1000);
     }
 
     @Override

@@ -1,9 +1,4 @@
 server:
   port: 23650
-spring:
-  redis:
-    host: 172.16.2.30
-    password: pjWfpKLb7j
-    database: 11
 logging:
   config: classpath:log/logback-spring.xml
