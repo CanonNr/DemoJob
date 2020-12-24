@@ -4,8 +4,8 @@ package cn.lksun.demojob.core.handler.aspect;
 
 import cn.lksun.demojob.core.entity.Handle;
 import cn.lksun.demojob.core.handler.annotation.JobHandle;
+import lombok.Data;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,6 @@ import org.springframework.util.ReflectionUtils;
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.util.Map;
-
 
 @Component
 public class ScannerComponent implements BeanPostProcessor {

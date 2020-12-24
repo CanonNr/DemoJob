@@ -22,6 +22,7 @@ public class Handle {
         Class<?> aClass = Class.forName(className);
         return aClass.newInstance();
     }
+
     protected Method getMethod() throws ClassNotFoundException, NoSuchMethodException {
         Class<?> aClass = Class.forName(className);
         return aClass.getMethod(methodName);

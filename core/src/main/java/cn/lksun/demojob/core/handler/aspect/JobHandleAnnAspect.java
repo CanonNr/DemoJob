@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 @Order(1)
 @Component
 public class JobHandleAnnAspect {
-    @Before("@annotation(jobHandle)")// 拦截被TestAnnotation注解的方法；如果你需要拦截指定package指定规则名称的方法，可以使用表达式execution(...)，具体百度一下资料一大堆
+    @Before("@annotation(jobHandle)")
     public void beforeTest(JoinPoint point, JobHandle jobHandle) throws Throwable {
         Class<?> clz = Class.forName(point.getSignature().getDeclaringType().getName());
         Object object = clz.newInstance();
