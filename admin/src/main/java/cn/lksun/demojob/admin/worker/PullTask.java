@@ -4,6 +4,7 @@ import io.micrometer.core.instrument.util.NamedThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.Ordered;
+import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.BoundZSetOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,8 @@ public class PullTask implements CommandLineRunner, Ordered {
 
     public final String TIME_RANK = "demojob:time-rank";
 
+    public final String TASK_INFO = "demojob:task-info";
+
     @Resource
     RedisTemplate<String, Serializable> redisTemplate;
 
@@ -32,6 +35,11 @@ public class PullTask implements CommandLineRunner, Ordered {
 
     @Override
     public void run(String... args) throws Exception {
+
+        BoundZSetOperations<String, Serializable> timeRankOps = redisTemplate.boundZSetOps(TIME_RANK);
+
+        BoundHashOperations<String, Object, Object> hashOps = redisTemplate.boundHashOps(TASK_INFO);
+
         Timer t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -39,9 +47,6 @@ public class PullTask implements CommandLineRunner, Ordered {
                 poll.execute(new Runnable() {
                     @Override
                     public void run() {
-
-                        BoundZSetOperations<String, Serializable> timeRankOps = redisTemplate.boundZSetOps(TIME_RANK);
-
                         while (true){
                             Set<Serializable> range = timeRankOps.range(0L, 0L);
                             if (range != null) {
@@ -49,25 +54,28 @@ public class PullTask implements CommandLineRunner, Ordered {
                                 if (taskId != null) {
                                     int score = Objects.requireNonNull(timeRankOps.score(taskId)).intValue();
                                     if (score <= System.currentTimeMillis() / 1000){
-                                        // todo
                                         log.info("开始执行...{}",taskId);
+                                        if (hashOps.get(taskId) != null){
+                                            // 存在则执行
+                                            log.info("{}存在",taskId);
+                                        }
                                         timeRankOps.remove(taskId);
+                                        hashOps.delete(taskId);
                                     }
-
-                                    // 没有需要执行的任务
-                                    log.info("end...");
-                                    break;
                                 }
+                                log.info("working...");
+                                break;
                             }
                         }
                     }
                 });
             }
-        }, 0, 1000);
+        }, 0, 1500);
     }
 
     @Override
     public int getOrder() {
         return 0;
     }
+
 }
