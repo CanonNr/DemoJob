@@ -4,12 +4,14 @@ import cn.lksun.demojob.core.bean.HandleConfig;
 import cn.lksun.demojob.core.controller.HandleController;
 import cn.lksun.demojob.core.handler.aspect.ScannerComponent;
 import cn.lksun.demojob.core.service.Register;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Import({ScannerComponent.class, HandleConfig.class, HandleController.class, Register.class})
+@ConfigurationPropertiesScan("cn.lksun.demojob.core.config")
 @Inherited
 public @interface EnableDemoJob {
 }
