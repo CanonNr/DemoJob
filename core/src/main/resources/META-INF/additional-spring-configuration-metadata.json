@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "demojob.admin.url",
+      "type": "java.lang.String",
+      "description": "Description for demojob.admin.url."
+    },
+    {
+      "name": "demojob.client.name",
+      "type": "java.lang.String",
+      "description": "Description for demojob.client.name."
+    }
+  ] }
