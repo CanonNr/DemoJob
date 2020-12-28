@@ -14,6 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class RegisterController {
     @PostMapping("register")
     public void register(@RequestBody Node node){
-        log.info(node.toString());
+        System.out.println(node);
     }
 }

@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/demo-job")
+@RequestMapping("/demo-job/handle")
 public class HandleController {
 
     @Resource
