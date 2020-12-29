@@ -1,6 +1,9 @@
 server:
   port: 14741
 spring:
+  cache:
+    ehcache:
+      config: classpath:ehcache.xml
   application:
     name: demo-job-admin
   redis:

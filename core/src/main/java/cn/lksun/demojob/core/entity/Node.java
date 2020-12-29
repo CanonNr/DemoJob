@@ -12,4 +12,14 @@ public class Node {
 
     public Map<String, Handle> handleMap;
 
+    public Node(String appName,String url,Map<String, Handle> handleMap){
+        this.appName = appName;
+        this.url = url;
+        this.handleMap = handleMap;
+    }
+
+    public Node(){
+
+    }
+
 }

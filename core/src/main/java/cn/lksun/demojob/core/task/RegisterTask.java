@@ -82,6 +82,15 @@ public class RegisterTask implements CommandLineRunner, Ordered {
         }
     }
 
+    public void test(Node TestNode){
+        try{
+            restTemplate.postForEntity(adminUrl+"/demo-job/register", TestNode, String.class);
+            log.info("Job Register Success");
+        }catch (Exception e){
+            log.error("Register Error - Address:{} ,Message:{}",adminUrl+"/demo-job/register",e.getMessage());
+        }
+    }
+
     @Override
     public int getOrder() {
         return 0;
