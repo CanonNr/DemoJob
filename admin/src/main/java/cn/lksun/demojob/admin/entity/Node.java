@@ -9,14 +9,7 @@ import java.util.Map;
 @Data
 public class Node {
 
-    // 正常节点
-    protected final Integer STATUS_NORMAL_OUTAGE = 1;
-
-    // 疑似宕机,降低优先级
-    protected final Integer STATUS_MAYBE_OUTAGE = 2;
-
-    // 确认宕机，不再委派
-    protected final Integer STATUS_ASCERTAIN_OUTAGE = 3;
+    public String nid;
 
     // 节点名,组名
     // 由该字段对多节点注册时进行分组
@@ -29,7 +22,10 @@ public class Node {
     public Integer status;
 
     // 续约次数
-    public Integer heartbeat;
+    public Integer heartbeat = 0;
+
+    // 上次报告时间
+    public Date lastReportTime;
 
     @Override
     protected Object clone() {

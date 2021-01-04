@@ -7,14 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.Ordered;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-
 import javax.annotation.Resource;
 import java.net.InetAddress;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -47,13 +46,14 @@ public class RegisterTask implements CommandLineRunner, Ordered {
 
     RestTemplate restTemplate = new RestTemplate();
 
-    private boolean registerStatus = false;
+    private final String NID = UUID.randomUUID().toString().replace("-","").toLowerCase();
 
     @Override
     public void run(String... args) throws Exception {
         node.setAppName(name);
         node.setUrl(InetAddress.getLocalHost().getHostAddress() + ":" + port);
         node.setHandleMap(handleMap);
+        node.setNid(NID);
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -63,7 +63,6 @@ public class RegisterTask implements CommandLineRunner, Ordered {
                     @Override
                     public void run() {
                         doRegister();
-                        if (registerStatus) timer.cancel();
                     }
                 });
             }
@@ -75,19 +74,9 @@ public class RegisterTask implements CommandLineRunner, Ordered {
         String url = adminUrl+ adminRegisterPath;
         try{
             restTemplate.postForEntity(url, node, String.class);
-            registerStatus = true;
-            log.info("Job Register Success");
+            log.info("Node Report Success");
         }catch (Exception e){
-            log.error("Register Error - Address:{} ,Message:{}",url,e.getMessage());
-        }
-    }
-
-    public void test(Node TestNode){
-        try{
-            restTemplate.postForEntity(adminUrl+"/demo-job/register", TestNode, String.class);
-            log.info("Job Register Success");
-        }catch (Exception e){
-            log.error("Register Error - Address:{} ,Message:{}",adminUrl+"/demo-job/register",e.getMessage());
+            log.error("Report Error - Address:{} ,Message:{}",url,e.getMessage());
         }
     }
 

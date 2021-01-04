@@ -6,6 +6,8 @@ import java.util.Map;
 @Data
 public class Node {
 
+    public String nid;
+
     public String appName;
 
     public String url;

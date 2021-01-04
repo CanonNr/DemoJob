@@ -63,7 +63,7 @@ public class PullTask implements CommandLineRunner, Ordered {
                                         hashOps.delete(taskId);
                                     }
                                 }
-                                log.info("working...");
+                                //log.info("working...");
                                 break;
                             }
                         }

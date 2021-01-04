@@ -6,4 +6,4 @@ demojob:
   admin:
     url: http://127.0.0.1:14741
   client:
-    name: test999
+    name: test1
