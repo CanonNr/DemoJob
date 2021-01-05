@@ -40,7 +40,7 @@ public class RegisterTask implements CommandLineRunner, Ordered {
                 poll.execute(new Runnable() {
                     @Override
                     public void run() {
-                        if(node.appName != null){
+                        if(node.appName == null){
                             timer.cancel();
                         }
                         doRegister();
