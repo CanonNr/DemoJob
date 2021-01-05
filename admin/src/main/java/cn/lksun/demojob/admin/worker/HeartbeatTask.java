@@ -2,8 +2,10 @@ package cn.lksun.demojob.admin.worker;
 
 import cn.lksun.demojob.admin.service.heartbeat.HeartbeatService;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.Ordered;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Timer;
@@ -12,13 +14,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
+@Component
 public class HeartbeatTask implements CommandLineRunner, Ordered {
 
     @Resource
     HeartbeatService heartbeatService;
 
-    private final ThreadPoolExecutor pool = new ThreadPoolExecutor(10,
-            5,
+    public static final ThreadPoolExecutor poll = new ThreadPoolExecutor(60,
+            60,
             0L,
             TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<>(),new NamedThreadFactory("Heartbeat Worker"));
@@ -29,13 +33,19 @@ public class HeartbeatTask implements CommandLineRunner, Ordered {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                heartbeatService.nodeScan();
+                poll.execute(new Runnable(){
+                    @Override
+                    public void run() {
+                        heartbeatService.nodeScan();
+                    }
+                });
+
             }
-        },2000,5000);
+        },0,5000);
     }
 
     @Override
     public int getOrder() {
-        return 0;
+        return 2;
     }
 }

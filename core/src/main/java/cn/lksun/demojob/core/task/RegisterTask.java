@@ -9,7 +9,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.Ordered;
 import org.springframework.web.client.RestTemplate;
 import javax.annotation.Resource;
-import java.net.InetAddress;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -18,9 +17,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-/**
- * 首次注册
- */
 @Slf4j
 public class RegisterTask implements CommandLineRunner, Ordered {
 
