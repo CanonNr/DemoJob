@@ -26,24 +26,10 @@ public class RegisterTask implements CommandLineRunner, Ordered {
             TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<>(),new NamedThreadFactory("First Register Worker"));
 
-    @Value("${demojob.admin.url}")
-    private String adminUrl;
-
-    @Value("${demojob.client.name}")
-    private String name;
-
-    @Value("${server.port}")
-    private String port;
-
-    @Resource
-    Map<String, Handle> handleMap;
-
     @Resource
     Node node;
 
     RestTemplate restTemplate = new RestTemplate();
-
-    private final String NID = UUID.randomUUID().toString().replace("-","").toLowerCase();
 
     @Override
     public void run(String... args) throws Exception {
@@ -54,6 +40,9 @@ public class RegisterTask implements CommandLineRunner, Ordered {
                 poll.execute(new Runnable() {
                     @Override
                     public void run() {
+                        if(node.appName != null){
+                            timer.cancel();
+                        }
                         doRegister();
                     }
                 });
@@ -62,13 +51,15 @@ public class RegisterTask implements CommandLineRunner, Ordered {
     }
 
     private void doRegister(){
-        String adminRegisterPath = "/demo-job/register";
-        String url = adminUrl+ adminRegisterPath;
-        try{
-            restTemplate.postForEntity(url, node, String.class);
-            log.info("Node Report Success");
-        }catch (Exception e){
-            log.error("Report Error - Address:{} ,Message:{}",url,e.getMessage());
+        if (node.adminUrl != null){
+            String adminRegisterPath = "/demo-job/register";
+            String url = node.adminUrl+ adminRegisterPath;
+            try{
+                restTemplate.postForEntity(url, node, String.class);
+                log.info("Node Report Success");
+            }catch (Exception e){
+                log.error("Report Error - Address:{} ,Message:{}",url,e.getMessage());
+            }
         }
     }
 

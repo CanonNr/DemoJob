@@ -10,6 +10,8 @@ public class Node {
 
     public String appName;
 
+    public String adminUrl;
+
     public String url;
 
     public Map<String, Handle> handleMap;

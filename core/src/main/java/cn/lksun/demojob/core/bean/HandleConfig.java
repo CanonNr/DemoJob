@@ -23,7 +23,7 @@ public class HandleConfig {
     @Value("${demojob.admin.url}")
     private String AdminUrl;
 
-    @Value("${demojob.client.name}")
+    @Value("${demojob.client.name:demoJobDefaultName}")
     private String name;
 
     private final String NID = UUID.randomUUID().toString().replace("-","").toLowerCase();
@@ -36,7 +36,13 @@ public class HandleConfig {
     @Bean
     public Node node(){
         Node node = new Node();
+
+        if (name.equals("demoJobDefaultName")){
+            return node;
+        }
+
         node.setNid(NID);
+        node.setAdminUrl(AdminUrl);
         node.setAppName(name);
         try {
             node.setUrl(InetAddress.getLocalHost().getHostAddress() + ":" + port);

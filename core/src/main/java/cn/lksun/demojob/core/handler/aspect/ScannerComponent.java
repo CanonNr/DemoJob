@@ -1,7 +1,5 @@
 package cn.lksun.demojob.core.handler.aspect;
 
-
-
 import cn.lksun.demojob.core.entity.Handle;
 import cn.lksun.demojob.core.handler.annotation.JobHandle;
 import lombok.Data;
@@ -32,7 +30,7 @@ public class ScannerComponent implements BeanPostProcessor {
         for (Method method : methods) {
             if (method != null){
                 JobHandle jobHandle = AnnotationUtils.findAnnotation(method, JobHandle.class);
-                if (jobHandle!=null) {
+                if (jobHandle != null) {
                     String handleName = jobHandle.Name();
                     String handleDescription = jobHandle.Description();
                     String className = method.getDeclaringClass().getName();
