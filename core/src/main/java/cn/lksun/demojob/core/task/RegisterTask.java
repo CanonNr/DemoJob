@@ -39,10 +39,11 @@ public class RegisterTask implements CommandLineRunner, Ordered {
     @Value("${server.port}")
     private String port;
 
-    private final Node node = new Node();
-
     @Resource
     Map<String, Handle> handleMap;
+
+    @Resource
+    Node node;
 
     RestTemplate restTemplate = new RestTemplate();
 
@@ -50,11 +51,6 @@ public class RegisterTask implements CommandLineRunner, Ordered {
 
     @Override
     public void run(String... args) throws Exception {
-        node.setAppName(name);
-        node.setUrl(InetAddress.getLocalHost().getHostAddress() + ":" + port);
-        node.setHandleMap(handleMap);
-        node.setNid(NID);
-
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override

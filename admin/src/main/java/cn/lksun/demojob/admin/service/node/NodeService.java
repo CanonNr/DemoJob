@@ -20,13 +20,15 @@ public class NodeService {
         Map<String, LinkedList<Node>> map = new HashMap<String,LinkedList<Node>>();
         CacheManager cacheManager = CacheManager.create();
         Cache cache = cacheManager.getCache("NodeList");
-        cache.getKeys().forEach(key->{
-            Element nodeList = cache.get(key);
-            if (nodeList != null){
-                NodeGroup objectValue = (NodeGroup) nodeList.getObjectValue();
-                map.put(key.toString(),objectValue.nodes);
-            }
-        });
+        if(cache != null){
+            cache.getKeys().forEach(key->{
+                Element nodeList = cache.get(key);
+                if (nodeList != null){
+                    NodeGroup objectValue = (NodeGroup) nodeList.getObjectValue();
+                    map.put(key.toString(),objectValue.nodes);
+                }
+            });
+        }
         return map;
     }
 
