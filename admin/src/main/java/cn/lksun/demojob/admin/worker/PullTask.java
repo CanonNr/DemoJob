@@ -1,5 +1,6 @@
 package cn.lksun.demojob.admin.worker;
 
+import cn.lksun.demojob.admin.constant.RedisTableName;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -19,10 +20,6 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class PullTask implements CommandLineRunner, Ordered {
 
-    public final String TIME_RANK = "demojob:time-rank";
-
-    public final String TASK_INFO = "demojob:task-info";
-
     @Resource
     RedisTemplate<String, Serializable> redisTemplate;
 
@@ -36,9 +33,9 @@ public class PullTask implements CommandLineRunner, Ordered {
     @Override
     public void run(String... args) throws Exception {
 
-        BoundZSetOperations<String, Serializable> timeRankOps = redisTemplate.boundZSetOps(TIME_RANK);
+        BoundZSetOperations<String, Serializable> timeRankOps = redisTemplate.boundZSetOps(RedisTableName.REDIS_TIME_RANK_TABLE_NAME);
 
-        BoundHashOperations<String, Object, Object> hashOps = redisTemplate.boundHashOps(TASK_INFO);
+        BoundHashOperations<String, Object, Object> hashOps = redisTemplate.boundHashOps(RedisTableName.REDIS_TASK_INFO_TABLE_NAME);
 
         Timer t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {

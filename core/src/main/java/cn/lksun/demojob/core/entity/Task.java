@@ -1,7 +1,6 @@
 package cn.lksun.demojob.core.entity;
 
 import lombok.Data;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,13 +9,16 @@ public class Task {
 
     public String appName;
 
-    public Integer time;
+    public String handleName;
+
+    public long time;
 
     public List<Object> args;
 
-    public Task(String appName, Integer time, Object... args){
+    public Task(String appName,String handleName,long time, Object... args){
         this.appName = appName;
         this.time = time;
+        this.handleName = handleName;
         this.args = Arrays.asList(args);
     }
 

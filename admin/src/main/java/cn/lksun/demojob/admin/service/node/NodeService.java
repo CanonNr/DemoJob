@@ -21,8 +21,6 @@ public class NodeService {
     @Resource
     CacheService cacheService;
 
-
-
     public Map<String, LinkedList<Node>> getNodeMap(){
         Cache cache = cacheService.getCache();
         Map<String, LinkedList<Node>> map = new HashMap<String,LinkedList<Node>>();
@@ -36,6 +34,17 @@ public class NodeService {
             });
         }
         return map;
+    }
+
+    public NodeGroup getNodes(String appName){
+        Cache cache = cacheService.getCache();
+        if(cache != null){
+            Element nodeList = cache.get(appName);
+            if (nodeList != null){
+                return (NodeGroup)nodeList.getObjectValue();
+            }
+        }
+        return null;
     }
 
     public void putNode(String appName,NodeGroup nodeGroup){

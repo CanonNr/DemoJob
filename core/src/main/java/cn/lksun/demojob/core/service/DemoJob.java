@@ -13,9 +13,9 @@ public class DemoJob {
     @Value("${demojob.admin.url}")
     private String adminUrl;
 
-    public boolean exec(String AppName,Integer time,Object... args){
+    public boolean exec(String AppName,long time,Object... args){
         RestTemplate restTemplate = new RestTemplate();
-        Task task = new Task(AppName,time,args);
+        Task task = new Task(AppName,"CreateHandle",time,args);
         String requestUrl = adminUrl+"/demo-job/exec";
         try {
             restTemplate.put(requestUrl,task);
