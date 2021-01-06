@@ -1,6 +1,10 @@
 package cn.lksun.demojob.admin.worker;
 
 import cn.lksun.demojob.admin.constant.RedisTableName;
+import cn.lksun.demojob.admin.entity.Task;
+import cn.lksun.demojob.admin.service.execute.TaskExecute;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -22,6 +26,9 @@ public class PullTask implements CommandLineRunner, Ordered {
 
     @Resource
     RedisTemplate<String, Serializable> redisTemplate;
+
+    @Resource
+    TaskExecute taskExecute;
 
     private static final ThreadPoolExecutor poll = new ThreadPoolExecutor(60,
             60,
@@ -51,23 +58,25 @@ public class PullTask implements CommandLineRunner, Ordered {
                                 if (taskId != null) {
                                     int score = Objects.requireNonNull(timeRankOps.score(taskId)).intValue();
                                     if (score <= System.currentTimeMillis() / 1000){
-                                        log.info("开始执行...{}",taskId);
-                                        if (hashOps.get(taskId) != null){
-                                            // 存在则执行
-                                            log.info("{}存在",taskId);
+                                        Object task = hashOps.get(taskId);
+                                        if (task != null){
+                                            log.info("开始执行...{}",taskId);
+                                            Task taskObject = JSONObject.parseObject(task.toString(),Task.class);
+                                            taskExecute.exec(taskId,taskObject);
                                         }
-                                        timeRankOps.remove(taskId);
-                                        hashOps.delete(taskId);
+                                        //todo
+                                        //timeRankOps.remove(taskId);
+                                        //hashOps.delete(taskId);
                                     }
                                 }
-                                //log.info("working...");
+                                log.info("working...");
                                 break;
                             }
                         }
                     }
                 });
             }
-        }, 0, 1500);
+        }, 1000, 5000);
     }
 
     @Override
