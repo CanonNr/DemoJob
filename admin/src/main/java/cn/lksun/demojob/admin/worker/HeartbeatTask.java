@@ -41,7 +41,7 @@ public class HeartbeatTask implements CommandLineRunner, Ordered {
                 });
 
             }
-        },0,5000);
+        },30000,30000);
     }
 
     @Override

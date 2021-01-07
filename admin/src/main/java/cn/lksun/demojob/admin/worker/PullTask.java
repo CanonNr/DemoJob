@@ -64,9 +64,8 @@ public class PullTask implements CommandLineRunner, Ordered {
                                             Task taskObject = JSONObject.parseObject(task.toString(),Task.class);
                                             taskExecute.exec(taskId,taskObject);
                                         }
-                                        //todo
-                                        //timeRankOps.remove(taskId);
-                                        //hashOps.delete(taskId);
+                                        timeRankOps.remove(taskId);
+                                        hashOps.delete(taskId);
                                     }
                                 }
                                 log.info("working...");
@@ -76,7 +75,7 @@ public class PullTask implements CommandLineRunner, Ordered {
                     }
                 });
             }
-        }, 1000, 5000);
+        }, 5000, 500);
     }
 
     @Override
