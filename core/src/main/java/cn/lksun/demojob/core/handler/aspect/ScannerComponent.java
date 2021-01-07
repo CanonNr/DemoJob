@@ -11,6 +11,9 @@ import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -35,7 +38,9 @@ public class ScannerComponent implements BeanPostProcessor {
                     String handleDescription = jobHandle.Description();
                     String className = method.getDeclaringClass().getName();
                     String methodName = method.getName();
-                    Handle handle = new Handle(handleName,handleDescription,method.toString(),className, methodName);
+                    Class<?>[] parameterTypes1 = method.getParameterTypes();
+                    List<Class<?>> parameterTypes = Arrays.asList(method.getParameterTypes());
+                    Handle handle = new Handle(handleName,handleDescription,method.toString(),className, methodName,parameterTypes);
                     handleMap.put(handleName,handle);
                 }
             }

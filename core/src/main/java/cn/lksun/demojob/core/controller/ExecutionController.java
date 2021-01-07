@@ -11,6 +11,8 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Slf4j
 @RestController
@@ -20,35 +22,27 @@ public class ExecutionController {
     @Resource
     Map<String, Handle> handleMap;
 
-
-
     @RequestMapping(value = "factory",method = RequestMethod.POST)
     public void factory(@RequestBody Task task){
         String handleName = task.handleName;
-        List<Object> args = task.args;
+        Object[] args = task.args.toArray();
         Handle handle = handleMap.get(handleName);
         if (handle != null){
+            Object[] parameterTypes = handle.parameterTypes.toArray();
             try {
-//                Class<?> clz = Class.forName(handle.className);
-//                System.out.println(Arrays.toString(clz.getMethods()));
-//                Object object = clz.newInstance();
-//                Method method = clz.getMethod(handle.methodName,String.class,String.class);
-//                Object invoke = method.invoke(null);
-//                System.out.println(invoke);
-//                HandleExecutionService execService = new HandleExecutionService(handle.className,handle.methodName);
-//                int parameterCount = execService.getMethod().getParameterCount();
-//                int size = args.size();
-//                if (parameterCount != size){
-//                    // 请求参数数量和执行器实际参数数量不匹配
-//                    throw new Exception("parameterCount Not Match");
-//                }
-//                execService.invoke();
+                HandleExecutionService execService = new HandleExecutionService(handle.className,handle.methodName);
+                Object object = execService.getObject();
+                Method method = execService.getMethod(handle.methodName, parameterTypes);
+                if (method.getParameterCount() != task.args.size()){
+                    // 请求参数数量和执行器实际参数数量不匹配
+                    throw new Exception("parameterCount Not Match");
+                }
+                method.invoke(object,args);
                 log.info("Successfully");
-//            } catch (ClassNotFoundException | NoSuchMethodException e) {
-//                log.error("Handle Error : {}",e.getMessage());
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
+                log.error("Handle Error : {}",e.getMessage());
             } catch (Exception e) {
-                e.printStackTrace();
-//                log.error("Handle Execution : {}",e.getMessage());
+                log.error("Handle Execution : {}",e.getMessage());
             }
         }else {
             log.error("{} Handle not found",handleName);

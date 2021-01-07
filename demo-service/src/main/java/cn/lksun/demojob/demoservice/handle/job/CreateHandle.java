@@ -6,14 +6,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class CreateHandle {
 
-    public CreateHandle(){
-
-    }
-
     @JobHandle(Name = "CreateHandle",Description = "测试执行器")
-    public void test(String id,Integer time){
+    public void test(String id,Integer name){
         for (int i = 0; i < 3; i++) {
-            System.out.println("[CreateHandle] Hello DemoJob!");
+            System.out.println("[CreateHandle] Hello DemoJob! "+id+"-"+name);
         }
     }
 }
