@@ -5,6 +5,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CreateHandle {
+
+    public CreateHandle(){
+
+    }
+
     @JobHandle(Name = "CreateHandle",Description = "测试执行器")
     public void test(String id,Integer time){
         for (int i = 0; i < 3; i++) {

@@ -1,7 +1,6 @@
 package cn.lksun.demojob.core.entity;
 
 import lombok.Data;
-
 import java.lang.reflect.Method;
 
 @Data

@@ -56,9 +56,9 @@ public class RegisterTask implements CommandLineRunner, Ordered {
             String url = node.adminUrl+ adminRegisterPath;
             try{
                 restTemplate.postForEntity(url, node, String.class);
-                log.info("Node Report Success");
+                // log.info("Node Report Success");
             }catch (Exception e){
-                log.error("Report Error - Address:{} ,Message:{}",url,e.getMessage());
+                // log.error("Report Error - Address:{} ,Message:{}",url,e.getMessage());
             }
         }
     }

@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.LinkedList;
 import cn.lksun.demojob.admin.constant.NodeConstant;
 import org.springframework.web.client.RestTemplate;
@@ -42,9 +43,9 @@ public class TaskExecute {
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<String> remoteExec = restTemplate.postForEntity(url, task, String.class);
             String body = remoteExec.getBody();
-            log.info("TaskID {} - Task Remote Execution Successfully",taskId);
+            log.info("TaskID {} - Task Remote Execution Successfully - {}",taskId,url);
         }catch (Exception e){
-            log.error("TaskID {} - Task Remote Execution Failed - {}",taskId,e.getMessage());
+            log.error("TaskID {} - Task Remote Execution Failed - url:{} - message:{}",taskId,url,e.getMessage());
         }
     }
 }

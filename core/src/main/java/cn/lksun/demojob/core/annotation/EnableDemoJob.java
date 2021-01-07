@@ -1,6 +1,7 @@
 package cn.lksun.demojob.core.annotation;
 
 import cn.lksun.demojob.core.bean.HandleConfig;
+import cn.lksun.demojob.core.controller.ExecutionController;
 import cn.lksun.demojob.core.controller.HandleController;
 import cn.lksun.demojob.core.controller.HeartbeatController;
 import cn.lksun.demojob.core.controller.InfoController;
@@ -15,10 +16,11 @@ import java.lang.annotation.*;
 @Import({
     ScannerComponent.class,
     HandleConfig.class,
+    RegisterTask.class,
     HandleController.class,
     InfoController.class,
-    RegisterTask.class,
-    HeartbeatController.class
+    HeartbeatController.class,
+    ExecutionController.class,
 })
 @ConfigurationPropertiesScan("cn.lksun.demojob.core.config")
 @Inherited
