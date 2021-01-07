@@ -19,7 +19,7 @@ class DemoServiceApplicationTests {
     @Test
     void contextLoads() {
 
-        long firstTime = (System.currentTimeMillis()/ 1000) + 60;
+        long firstTime = (System.currentTimeMillis()/ 1000) + 40;
 
         for (int i = 0; i < 500; i++) {
             long time = firstTime + (int) (Math.random()*(30-1)+1);

@@ -36,7 +36,11 @@ public class PullTask implements CommandLineRunner, Ordered {
             TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<>(),new NamedThreadFactory("Job Worker"));
 
-
+    /**
+     * todo 此处需要加一个锁防止第一个线程还在轮询中新的线程又去轮询造成重复消费。
+     * @param args
+     * @throws Exception
+     */
     @Override
     public void run(String... args) throws Exception {
 
@@ -52,30 +56,37 @@ public class PullTask implements CommandLineRunner, Ordered {
                     @Override
                     public void run() {
                         while (true){
+                            log.info("working...");
+                            // 取第一条数据
                             Set<Serializable> range = timeRankOps.range(0L, 0L);
-                            if (range != null) {
-                                String taskId = (String) Arrays.stream(range.toArray()).findFirst().orElse(null);
-                                if (taskId != null) {
-                                    int score = Objects.requireNonNull(timeRankOps.score(taskId)).intValue();
-                                    if (score <= System.currentTimeMillis() / 1000){
-                                        Object task = hashOps.get(taskId);
-                                        if (task != null){
-                                            log.info("开始执行...{}",taskId);
-                                            Task taskObject = JSONObject.parseObject(task.toString(),Task.class);
-                                            taskExecute.exec(taskId,taskObject);
-                                        }
-                                        timeRankOps.remove(taskId);
-                                        hashOps.delete(taskId);
+                            // 如果结果不为空且长度大于1
+                            if (range != null && range.size() > 0) {
+                                // 获取到任务ID
+                                String taskId = (String) range.toArray()[0];
+                                // 获取当前任务的时间戳
+                                int score = Objects.requireNonNull(timeRankOps.score(taskId)).intValue();
+                                // 判断是否过期
+                                if (score <= System.currentTimeMillis() / 1000){
+                                    Object task = hashOps.get(taskId);
+                                    if (task != null){
+                                        log.info("开始执行...{}",taskId);
+                                        Task taskObject = JSONObject.parseObject(task.toString(),Task.class);
+                                        taskExecute.exec(taskId,taskObject);
                                     }
+                                    timeRankOps.remove(taskId);
+                                    hashOps.delete(taskId);
+                                }else{
+                                    // 如果没有过期则结束循环
+                                    break;
                                 }
-                                log.info("working...");
+                            }else{
                                 break;
                             }
                         }
                     }
                 });
             }
-        }, 5000, 500);
+        }, 1000, 500);
     }
 
     @Override
