@@ -34,8 +34,13 @@ public class NodeRegisterService {
             // 当前组所有节点
             NodeGroup nodeGroup = (NodeGroup) nodeList.getObjectValue();
             int index = isExistNode(nodeGroup.nodes,node);
+            System.out.println(index);
             if (index >= 0) {
                 Node temNode = nodeGroup.nodes.get(index);
+                // 相同url不同nid,注册时间差删除脏节点
+                if (!temNode.nid.equals(node.nid)){
+                    nodeGroup.nodes.removeIf(item-> item.url.equals(node.url));
+                }
                 temNode.heartbeat += 1;
                 temNode.lastReportTime = new Date();
                 Element element = new Element(node.appName,nodeGroup);
@@ -59,7 +64,7 @@ public class NodeRegisterService {
         int index = 0;
         for (Node item:list) {
             index++;
-            if (item.nid.equals(node.nid) && item.url.equals(node.url)){
+            if (item.url.equals(node.url)){
                 return index-1;
             }
         }
